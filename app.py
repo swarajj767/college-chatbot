@@ -2,7 +2,7 @@
 import streamlit as st
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("sk-proj6m6gkgg7KxBwFVMxCwIHui89yxfgJhaYKsIPnyjKAyNZ1MWtpcbP6NQFnFestVFvqNCF7Q8AT3BlbkFJO4jSjrbZLRaWmja0Y7ZsJPhK4guOU8lXHkVRMKqrdowgrKFwaUtBN22NxkMWrtRR6UwFWoIA"))
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 college_data = """
 Courses: BTech (CSE, AI, Mechanical), MBA, BBA
