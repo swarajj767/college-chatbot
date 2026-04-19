@@ -3,7 +3,7 @@ import streamlit as st
 from openai import OpenAI
 
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="sk-proj6m6gkgg7KxBwFVMxCwIHui89yxfgJhaYKsIPnyjKAyNZ1MWtpcbP6NQFnFestVFvqNCF7Q8AT3BlbkFJO4jSjrbZLRaWmja0Y7ZsJPhK4guOU8lXHkVRMKqrdowgrKFwaUtBN22NxkMWrtRR6UwFWoIA")
 
 
 college_data = """
