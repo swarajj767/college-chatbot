@@ -1,71 +1,40 @@
 #College Enquiry Chatbot
-import os 
 import streamlit as st
-from openai import OpenAI
+from transformers import pipeline
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+chatbot_model = pipeline("text-generation", model="distilgpt2")
+
 
 college_data = """
 Courses: BTech (CSE, AI, Mechanical), MBA, BBA
 Fees: BTech - 2 lakh/year, MBA - 3 lakh/year
-
-Hostel: Available for boys and girls, AC & Non-AC rooms
-Mess: Veg and non-veg food available
-
-Transport: College buses available from nearby cities with annual fee
-
-Events: Annual fest, tech fest, cultural events, sports competitions
-
-Attendance: Minimum 75% required to appear in exams
-
-Library: Digital + physical library with study space
-
-Placement: Average package 6 LPA, top companies visit every year
-
-Admission: Entrance exam + interview
-Location: Himachal Pradesh
+Hostel: Available for boys and girls
+Transport: Bus available from nearby cities
+Events: Annual fest, tech fest, sports events
+Attendance: Minimum 75% required
+Placement: Average 6 LPA
 """
 
-
 def chatbot(question):
-    response = client.chat.completions.create(
-        model="gpt-4.1-mini",
-        messages=[
-            {"role": "system", "content": f"You are a helpful college assistant. Answer only using this data: {college_data}"},
-            {"role": "user", "content": question}
-        ]
-    )
-    return response.choices[0].message.content
+    prompt = f"""
+You are a college enquiry assistant. Answer clearly and only using this data:
+
+{college_data}
+
+Question: {question}
+Answer:
+"""
+    response = chatbot_model(prompt, max_length=200, num_return_sequences=1)
+    return response[0]['generated_text'].split("Answer:")[-1]
 
 
-st.set_page_config(page_title="College Chatbot", page_icon="🎓", layout="centered")
-
+st.set_page_config(page_title="College Chatbot", page_icon="🎓")
 
 st.title("🎓 College Enquiry Chatbot")
-st.caption("Ask anything about college 📚")
+st.caption("Ask about fees, hostel, transport, events, etc.")
 
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-
-user_input = st.chat_input("Type your question here...")
+user_input = st.text_input("Ask your question:")
 
 if user_input:
-    
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user"):
-        st.markdown(user_input)
-
-    
-    response = chatbot(user_input)
-
-    
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    with st.chat_message("assistant"):
-        st.markdown(response)
+    answer = chatbot(user_input)
+    st.write("🤖", answer)
