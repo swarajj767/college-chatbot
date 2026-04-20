@@ -2,7 +2,7 @@
 import streamlit as st
 from transformers import pipeline
 
-chatbot_model = pipeline("text-generation", model="distilgpt2")
+chatbot_model = pipeline("text-generation", model="gpt2")
 
 
 college_data = """
@@ -17,16 +17,32 @@ Placement: Average 6 LPA
 
 def chatbot(question):
     prompt = f"""
-You are a college enquiry assistant. Answer clearly and only using this data:
+You are a helpful college enquiry assistant.
 
+Answer ONLY from this information:
 {college_data}
+
+If the answer is not present, say: "I don't have that information."
 
 Question: {question}
 Answer:
 """
-    response = chatbot_model(prompt, max_length=200, num_return_sequences=1)
-    return response[0]['generated_text'].split("Answer:")[-1]
 
+    response = chatbot_model(
+        prompt,
+        max_length=150,
+        num_return_sequences=1,
+        do_sample=True,
+        temperature=0.7
+    )
+
+    text = response[0]['generated_text']
+
+ 
+    if "Answer:" in text:
+        return text.split("Answer:")[-1].strip()
+    else:
+        return text
 
 st.set_page_config(page_title="College Chatbot", page_icon="🎓")
 
